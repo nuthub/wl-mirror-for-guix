@@ -14,35 +14,36 @@
   #:use-module (gnu packages freedesktop))
 
 (define-public wlr-protocols
-  (package
-    (name "wlr-protocols")
-    ;; TODO unknown version!
-    (version "0.0.1")
-    (source (origin
-              (method git-fetch)
-	      (uri (git-reference
-		    (url "https://gitlab.freedesktop.org/wlroots/wlr-protocols.git")
-		    (commit "4264185db3b7e961e7f157e1cc4fd0ab75137568")))
-	      (sha256
-	       (base32
-		"045jj3mbhi7p2qn59krz0vap0wd3i6zgwkvpl97idy702bnk9mv6"))))
-    (build-system gnu-build-system)
-    (arguments
-     '(#:phases (modify-phases %standard-phases
-		  (delete 'configure)
-		  (add-before 'build 'set-prefix-in-makefile
-		    (lambda* (#:key outputs #:allow-other-keys)
-		      (let ((out (assoc-ref outputs "out")))
-			(substitute* "Makefile"
-			  (("PREFIX=.*") (string-append "PREFIX="out "\n")))))))))    
-    (inputs
-     (list wayland))
-    (home-page "https://gitlab.freedesktop.org/wlroots/wlr-protocols")
-    (synopsis "Wayland protocols designed for use in wlroots (and other compositors).")
-    (description
-     "Wayland protocols designed for use in wlroots (and other compositors).")
-    ;; TODO unknown LICENSE
-    (license expat)))
+  (let ((revision "0")
+	(commit "4264185db3b7e961e7f157e1cc4fd0ab75137568"))
+    (package
+      (name "wlr-protocols")
+      (version (git-version "0.0" revision commit))
+      (source (origin
+		(method git-fetch)
+		(uri (git-reference
+		      (url "https://gitlab.freedesktop.org/wlroots/wlr-protocols.git")
+		      (commit commit)))
+		(sha256
+		 (base32
+		  "045jj3mbhi7p2qn59krz0vap0wd3i6zgwkvpl97idy702bnk9mv6"))))
+      (build-system gnu-build-system)
+      (arguments
+       '(#:phases (modify-phases %standard-phases
+		    (delete 'configure)
+		    (add-before 'build 'set-prefix-in-makefile
+		      (lambda* (#:key outputs #:allow-other-keys)
+			(let ((out (assoc-ref outputs "out")))
+			  (substitute* "Makefile"
+			    (("PREFIX=.*") (string-append "PREFIX="out "\n")))))))))    
+      (inputs
+       (list wayland))
+      (home-page "https://gitlab.freedesktop.org/wlroots/wlr-protocols")
+      (synopsis "Wayland protocols designed for use in wlroots (and other compositors).")
+      (description
+       "Wayland protocols designed for use in wlroots (and other compositors).")
+      ;; TODO unknown LICENSE
+      (license expat))))
 
 
 (define-public wl-mirror
